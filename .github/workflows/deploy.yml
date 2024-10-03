@@ -24,7 +24,7 @@ jobs:
         with:
           source-directory: "output"
           destination-github-username: kangju2000
-          destination-repository-name: gachdong-client
+          destination-repository-name: gachdong-frontend
           user-email: kangju2000@gmail.com
           commit-message: ${{ github.event.commits[0].message }}
       - name: Get the cloned directory
