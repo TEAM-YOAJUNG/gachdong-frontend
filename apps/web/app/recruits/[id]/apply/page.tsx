@@ -17,7 +17,7 @@ export default function ApplyPage() {
 
       <main className="max-w-[980px] mx-auto py-6 px-4">
         <Link
-          href="/announcements/1"
+          href="/recruits/1"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />

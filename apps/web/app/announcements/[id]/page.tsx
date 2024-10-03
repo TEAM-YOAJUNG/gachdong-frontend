@@ -1,147 +1,117 @@
 "use client";
 
-import { Header } from "@/components/layout/header";
-import { Eye, ArrowLeft } from "lucide-react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Header } from "@/components/layout/header";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, Calendar, User } from "lucide-react";
 
-export default function AnnouncementDetailPage() {
+interface Announcement {
+  id: number;
+  title: string;
+  date: string;
+  category: string;
+  content: string;
+  author: string;
+}
+
+export default function AnnouncementPage() {
+  const [announcement, setAnnouncement] = useState<Announcement | null>(null);
+
+  useEffect(() => {
+    // In a real application, you would fetch the announcement data from an API
+    // For this example, we'll use mock data
+    const mockAnnouncement: Announcement = {
+      id: 1,
+      title: "2024학년도 1학기 동아리 등록 안내",
+      date: "2024-02-15",
+      category: "일반",
+      content: `
+        안녕하세요, 학생 여러분.
+
+        2024학년도 1학기 동아리 등록에 대해 안내드립니다.
+
+        1. 등록 기간: 2024년 2월 20일 ~ 3월 5일
+        2. 등록 방법: 학교 홈페이지 내 동아리 관리 시스템을 통해 온라인으로 등록
+        3. 필요 서류:
+           - 동아리 등록 신청서
+           - 회원 명단
+           - 연간 활동 계획서
+           - 지도교수 승인서
+
+        4. 주의사항:
+           - 모든 서류는 PDF 형식으로 제출해주세요.
+           - 기존 동아리도 재등록이 필요합니다.
+           - 등록 마감 이후에는 추가 등록이 불가능합니다.
+
+        5. 문의:
+           학생처 동아리 담당자 (02-1234-5678, club@gachon.ac.kr)
+
+        많은 관심과 참여 부탁드립니다.
+
+        감사합니다.
+      `,
+      author: "학생처",
+    };
+
+    setAnnouncement(mockAnnouncement);
+  }, []);
+
+  if (!announcement) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-background font-sans">
       <Header />
 
       <main className="max-w-[980px] mx-auto py-6 px-4">
-        <Link
-          href="/announcements"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          모든 공고 보기
-        </Link>
+        <Button variant="ghost" asChild className="mb-4">
+          <Link href="/announcements" className="flex items-center">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            공지사항 목록으로 돌아가기
+          </Link>
+        </Button>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:w-2/3">
-            <div className="bg-card shadow rounded-lg overflow-hidden mb-6">
-              <div className="p-6 border-b">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-muted rounded-full flex-shrink-0"></div>
-                  <div>
-                    <h1 className="text-2xl font-bold">
-                      GDSC Gachon 24-25 Member 모집
-                    </h1>
-                    <p className="text-muted-foreground mt-1">
-                      GDG On Campus Gachon University
-                    </p>
-                  </div>
-                </div>
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-2xl">{announcement.title}</CardTitle>
+                <CardDescription className="flex items-center mt-2">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {announcement.date}
+                </CardDescription>
               </div>
-
-              <div className="p-6">
-                <Image
-                  src="/placeholder.svg"
-                  alt="GDSC Gachon"
-                  className="w-full h-64 object-cover mb-6 rounded-lg"
-                  width={800}
-                  height={400}
-                />
-
-                <div className="space-y-6">
-                  <section>
-                    <h2 className="text-xl font-semibold mb-2">
-                      📌 GDSC는 무엇인가요?
-                    </h2>
-                    <p className="mb-2">
-                      Google Developer Student Clubs(GDSC)는 구글 개발자 기술에
-                      관심이 있는 대학생 커뮤니티 그룹입니다.
-                    </p>
-                    <p>
-                      Peer-to-peer 학습 환경을 조성하는 리더들과 함께 기술을
-                      학습하고, 이를 공유할 수 있습니다. 24-25기는 2기 리더이며,
-                      25년 7월까지 1년 간 활동하게 됩니다.
-                    </p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-xl font-semibold mb-2">🎯 활동 안내</h2>
-                    <ul className="list-disc pl-5 space-y-2">
-                      <li>
-                        <strong>Connect Session</strong>
-                        <p>
-                          2주 마다 정기적으로 진행하는 Connect Session에서는
-                          모든 Member가 한 공간에 모여 기술 공유와 네트워킹을
-                          통해 서로의 성장을 돕습니다.
-                        </p>
-                      </li>
-                      <li>
-                        <strong>TechLearn Study</strong>
-                        <p>
-                          원하는 분야의 스터디에 참여하여 함께 배우고 성장할 수
-                          있습니다. 두 달 간 진행되는 TechLearn Study에서
-                          자유롭게 공부하고, 다른 멤버들에게 스터디 결과를 통해
-                          배운점을 공유하세요.
-                        </p>
-                      </li>
-                      <li>
-                        <strong>GDSC Solution Challenge</strong>
-                        <p>
-                          GDSC 구성원에게 제공되는 글로벌 규모의 공모전으로,
-                          UN에서 제정한 17가지 지속 가능한 개발 목표를 달성하기
-                          위한 솔루션을 개발합니다.
-                        </p>
-                      </li>
-                    </ul>
-                  </section>
-
-                  <section>
-                    <h2 className="text-xl font-semibold mb-2">
-                      🙋‍♀️ 연합 행사 참여
-                    </h2>
-                    <p>
-                      다른 GDSC 챕터, 혹은 파트너십과 동아리와의 다양한 연합
-                      행사가 예정되어 있습니다. 이를 통해 네트워킹의 기회를 얻을
-                      수 있습니다.
-                    </p>
-                  </section>
-                </div>
-              </div>
+              <Badge>{announcement.category}</Badge>
             </div>
-          </div>
-
-          <div className="lg:w-1/3">
-            <div className="sticky top-6">
-              <div className="bg-card shadow rounded-lg p-6 mb-6">
-                <h3 className="font-semibold text-lg mb-4">모집 정보</h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">모집기간</span>
-                    <span className="font-medium">2024.03.01 - 2024.03.15</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">모집인원</span>
-                    <span className="font-medium">00명</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">활동기간</span>
-                    <span className="font-medium">2024.03 - 2025.02</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">조회수</span>
-                    <span className="flex items-center">
-                      <Eye className="h-4 w-4 mr-1" />
-                      245
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <Link
-                href="/announcements/1/apply"
-                className="block w-full bg-primary text-white font-semibold py-3 rounded-lg text-center"
-              >
-                지원하기
-              </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center mb-4">
+              <User className="mr-2 h-4 w-4" />
+              <span className="text-sm text-muted-foreground">
+                {announcement.author}
+              </span>
             </div>
-          </div>
-        </div>
+            <Separator className="my-4" />
+            <div className="whitespace-pre-wrap">{announcement.content}</div>
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" asChild className="ml-auto">
+              <Link href="/announcements">목록으로</Link>
+            </Button>
+          </CardFooter>
+        </Card>
       </main>
     </div>
   );

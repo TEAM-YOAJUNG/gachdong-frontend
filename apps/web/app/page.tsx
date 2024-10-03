@@ -17,51 +17,65 @@ import {
   Filter,
   ChevronLeft,
   ChevronRight,
+  Calendar,
+  Eye,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Header } from "@/components/layout/header";
+import { RECRUIT_LIST, CLUBS } from "@/constants/data";
 
-const announcements = [
+const ANNOUNCEMENTS = [
   {
-    title: "새로운 동아리 모집 기간 시작",
-    description: "2024학년도 1학기 동아리 모집이 시작되었습니다!",
-    image:
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+    id: 1,
+    title: "2024학년도 1학기 동아리 등록 안내",
+    image: "/placeholder.svg?height=200&width=400",
   },
   {
-    title: "동아리 박람회 개최",
-    description: "다양한 동아리를 만나볼 수 있는 기회!",
-    image:
-      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+    id: 2,
+    title: "동아리 공간 사용 규정 변경 안내",
+    image: "/placeholder.svg?height=200&width=400",
   },
   {
-    title: "우수 동아리 시상식",
-    description: "2023학년도 우수 동아리 시상식이 열립니다.",
-    image:
-      "https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+    id: 3,
+    title: "2024 동아리 박람회 개최 안내",
+    image: "/placeholder.svg?height=200&width=400",
   },
 ];
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const bannerItems = [...RECRUIT_LIST, ...ANNOUNCEMENTS];
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [showRecruitingOnly, setShowRecruitingOnly] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % announcements.length);
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % bannerItems.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [bannerItems.length]);
 
   const nextSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide + 1) % announcements.length);
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % bannerItems.length);
   };
 
   const prevSlide = () => {
     setCurrentSlide(
-      (prevSlide) =>
-        (prevSlide - 1 + announcements.length) % announcements.length
+      (prevSlide) => (prevSlide - 1 + bannerItems.length) % bannerItems.length
     );
   };
+
+  const filteredClubs = CLUBS.filter((club) => {
+    const matchesSearch = club.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "전체" || club.category === selectedCategory;
+    const matchesRecruiting = !showRecruitingOnly || club.recruiting;
+    return matchesSearch && matchesCategory && matchesRecruiting;
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
@@ -70,7 +84,7 @@ export default function Home() {
         <section className="mb-8">
           <Card className="w-full overflow-hidden">
             <div className="relative h-[200px]">
-              {announcements.map((announcement, index) => (
+              {bannerItems.map((item, index) => (
                 <div
                   key={index}
                   className={`absolute inset-0 transition-opacity duration-500 ${
@@ -78,23 +92,28 @@ export default function Home() {
                   }`}
                 >
                   <Image
-                    src={announcement.image}
-                    alt={announcement.title}
+                    src={item.image}
+                    alt={item.title}
                     layout="fill"
                     objectFit="cover"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white p-8">
                     <div className="text-center">
-                      <h2 className="text-2xl font-bold mb-2">
-                        {announcement.title}
-                      </h2>
-                      <p className="text-lg mb-4">{announcement.description}</p>
-                      <Button
-                        variant="outline"
-                        className="text-white border-white hover:bg-white hover:text-foreground"
+                      <h2 className="text-2xl font-bold mb-2">{item.title}</h2>
+                      <Link
+                        href={
+                          item.id
+                            ? `/announcements/${item.id}`
+                            : `/recruits/${item.id}`
+                        }
                       >
-                        자세히 보기
-                      </Button>
+                        <Button
+                          variant="outline"
+                          className="bg-white text-black border-white hover:bg-gray-200 hover:text-black"
+                        >
+                          자세히 보기
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -126,6 +145,8 @@ export default function Home() {
                     type="search"
                     placeholder="동아리 검색"
                     className="pl-8 w-[200px]"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <DropdownMenu>
@@ -137,14 +158,22 @@ export default function Home() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem>모집 중인 동아리만</DropdownMenuItem>
-                    <DropdownMenuItem>최근 업데이트 순</DropdownMenuItem>
-                    <DropdownMenuItem>인기 순</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setShowRecruitingOnly(!showRecruitingOnly)}
+                    >
+                      {showRecruitingOnly
+                        ? "모든 동아리 보기"
+                        : "모집 중인 동아리만"}
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </div>
-            <Tabs defaultValue="전체" className="w-full mb-4">
+            <Tabs
+              defaultValue="전체"
+              className="w-full mb-4"
+              onValueChange={setSelectedCategory}
+            >
               <TabsList>
                 {[
                   "전체",
@@ -164,130 +193,107 @@ export default function Home() {
               </TabsList>
             </Tabs>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                {
-                  name: "GDG On Campus Gachon",
-                  category: "IT · 프로그래밍",
-                  recruiting: true,
-                  image:
-                    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-                {
-                  name: "가천대 토론 동아리",
-                  category: "학술 · 사회",
-                  recruiting: false,
-                  image:
-                    "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-                {
-                  name: "가천 미술 동아리",
-                  category: "문화 · 예술",
-                  recruiting: true,
-                  image:
-                    "https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-                {
-                  name: "가천 축구회",
-                  category: "체육 · 건강",
-                  recruiting: false,
-                  image:
-                    "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-              ].map((club, i) => (
-                <Card
-                  key={i}
-                  className="overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-16 h-16 bg-muted rounded-full flex-shrink-0 overflow-hidden">
-                        <Image
-                          src={club.image}
-                          alt={`${club.name} logo`}
-                          width={64}
-                          height={64}
-                          className="rounded-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <h3 className="font-semibold text-lg">{club.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {club.category}
-                        </p>
-                        <div className="flex items-center mt-2">
-                          <span
-                            className={`w-2 h-2 rounded-full ${club.recruiting ? "bg-green-500" : "bg-red-500"} mr-2`}
-                          ></span>
-                          <span
-                            className={`text-sm ${club.recruiting ? "text-green-600" : "text-red-600"}`}
-                          >
-                            {club.recruiting ? "모집중" : "모집 마감"}
-                          </span>
+              {filteredClubs.map((club) => (
+                <Link href={`/clubs/${club.id}`} key={club.id}>
+                  <Card className="overflow-hidden hover:shadow-md transition-shadow h-24">
+                    <CardContent className="p-3 h-full">
+                      <div className="flex items-center space-x-3 h-full">
+                        <div className="w-16 h-16 bg-muted rounded-full flex-shrink-0 overflow-hidden">
+                          <Image
+                            src={club.image}
+                            alt={`${club.name} logo`}
+                            width={64}
+                            height={64}
+                            className="rounded-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-grow flex flex-col justify-between h-full py-1 overflow-hidden">
+                          <div>
+                            <h3 className="font-semibold text-lg leading-tight truncate">
+                              {club.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground truncate">
+                              {club.category}
+                            </p>
+                          </div>
+                          <div className="flex items-center mt-1">
+                            <span
+                              className={`w-2 h-2 rounded-full ${
+                                club.recruiting ? "bg-green-500" : "bg-red-500"
+                              } mr-2`}
+                            ></span>
+                            <span
+                              className={`text-sm ${
+                                club.recruiting
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {club.recruiting ? "모집중" : "모집 마감"}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           </section>
 
           <section className="lg:w-1/3">
             <h2 className="text-2xl font-semibold mb-4">최근 올라온 공고</h2>
-            <div className="space-y-3">
-              {[
-                {
-                  name: "GDSC Gachon 24-25 Member",
-                  category: "IT · 프로그래밍",
-                  dday: "D-5",
-                  image:
-                    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-                {
-                  name: "가천대 토론 동아리 신입 모집",
-                  category: "학술 · 사회",
-                  dday: "D-3",
-                  image:
-                    "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-                {
-                  name: "가천 미술 동아리 회원 모집",
-                  category: "문화 · 예술",
-                  dday: "D-7",
-                  image:
-                    "https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80",
-                },
-              ].map((announcement, i) => (
-                <Card key={i} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-muted rounded-full flex-shrink-0 overflow-hidden">
-                        <Image
-                          src={announcement.image}
-                          alt="Club logo"
-                          width={40}
-                          height={40}
-                          className="rounded-full object-cover"
-                        />
+            <div className="space-y-3 flex flex-col">
+              {RECRUIT_LIST.slice(0, 3).map((announcement) => (
+                <Link
+                  href={`/recruits/${announcement.id}`}
+                  key={announcement.id}
+                >
+                  <Card className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-muted rounded-full flex-shrink-0 overflow-hidden">
+                          <Image
+                            src={announcement.image}
+                            alt={`${announcement.club} logo`}
+                            width={40}
+                            height={40}
+                            className="rounded-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <h3 className="font-semibold text-sm truncate">
+                            {announcement.title}
+                          </h3>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {announcement.club}
+                          </p>
+                          <div className="flex items-center text-xs text-muted-foreground mt-1 space-x-2">
+                            <span className="flex items-center">
+                              <Calendar className="h-3 w-3 mr-1" />
+                              {announcement.endDate}
+                            </span>
+                            <span className="flex items-center">
+                              <Eye className="h-3 w-3 mr-1" />
+                              {announcement.views}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <span className="inline-block bg-primary/10 text-primary text-xs font-semibold px-1.5 py-0.5 rounded-full">
+                            D-{announcement.daysLeft}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-grow">
-                        <h3 className="font-semibold text-sm">
-                          {announcement.name}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {announcement.category}
-                        </p>
-                      </div>
-                      <span className="text-xs font-medium text-primary">
-                        {announcement.dday}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
             <div className="text-center mt-4">
-              <Button variant="outline">+ 더보기</Button>
+              <Button variant="outline" asChild>
+                <Link href="/recruits">+ 더보기</Link>
+              </Button>
             </div>
           </section>
         </div>
