@@ -2,59 +2,17 @@
 
 import { useState } from "react";
 import { Header } from "@/components/layout/header";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Newspaper, Search } from "lucide-react";
+import { Newspaper, Search, Calendar, Eye } from "lucide-react";
 import Link from "next/link";
-
-interface Announcement {
-  id: number;
-  title: string;
-  date: string;
-  category: string;
-  content: string;
-}
+import { ANNOUNCEMENTS } from "@/constants/data";
 
 export default function Announcements() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([
-    {
-      id: 1,
-      title: "2024학년도 1학기 동아리 등록 안내",
-      date: "2024-02-15",
-      category: "일반",
-      content:
-        "2024학년도 1학기 동아리 등록 기간 및 절차에 대해 안내드립니다...",
-    },
-    {
-      id: 2,
-      title: "동아리 공간 사용 규정 변경 안내",
-      date: "2024-02-10",
-      category: "시설",
-      content: "동아리방 및 공용 공간 사용에 대한 새로운 규정이 적용됩니다...",
-    },
-    {
-      id: 3,
-      title: "2024 동아리 박람회 개최 안내",
-      date: "2024-02-05",
-      category: "행사",
-      content: "오는 3월 2일부터 3일간 동아리 박람회가 개최됩니다...",
-    },
-  ]);
-
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredAnnouncements = announcements.filter(
-    (announcement) =>
-      announcement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      announcement.content.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredAnnouncements = ANNOUNCEMENTS.filter((announcement) =>
+    announcement.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -82,21 +40,24 @@ export default function Announcements() {
               key={announcement.id}
               href={`/announcements/${announcement.id}`}
             >
-              <Card key={announcement.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle>{announcement.title}</CardTitle>
-                      <CardDescription>{announcement.date}</CardDescription>
+              <Card className="hover:bg-accent transition-colors">
+                <CardHeader className="p-4">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg">
+                      {announcement.title}
+                    </CardTitle>
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        {announcement.createdAt.split("T")[0]}
+                      </div>
+                      <div className="flex items-center">
+                        <Eye className="h-4 w-4 mr-1" />
+                        {announcement.views}
+                      </div>
                     </div>
-                    <Badge>{announcement.category}</Badge>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    {announcement.content}
-                  </p>
-                </CardContent>
               </Card>
             </Link>
           ))}
