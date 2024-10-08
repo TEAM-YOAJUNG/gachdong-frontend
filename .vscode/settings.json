@@ -3,5 +3,8 @@
     {
       "mode": "auto"
     }
+  ],
+  "exportall.config.relExclusion": [
+    "/packages/ui/src/select.tsx"
   ]
 }
