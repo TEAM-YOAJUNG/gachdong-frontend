@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -15,6 +15,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { authQueries, useLogout } from '@/apis/auth';
+import { Fragment, useMemo } from 'react';
 
 const PATH_LABELS: Record<string, string> = {
   dashboard: '대시보드',
@@ -41,7 +42,7 @@ export function Header() {
   const { data: profile } = useSuspenseQuery(authQueries.profile());
   const { mutate: logout } = useLogout();
 
-  const breadcrumbs = React.useMemo(() => {
+  const breadcrumbs = useMemo(() => {
     const segments = pathname.split('/').filter(Boolean);
 
     return segments
@@ -82,7 +83,7 @@ export function Header() {
       <div className="flex items-center justify-between">
         <nav className="flex items-center space-x-2 text-sm" aria-label="breadcrumb">
           {breadcrumbs.map((item, index) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               {index > 0 && <ChevronRight className="h-4 w-4 text-gray-400" aria-hidden="true" />}
               {item.href ? (
                 <Link href={item.href} className="text-gray-400 transition-colors hover:text-gray-100">
@@ -93,14 +94,14 @@ export function Header() {
                   {item.label}
                 </span>
               )}
-            </React.Fragment>
+            </Fragment>
           ))}
         </nav>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/avatars/01.png" alt="프로필 이미지" />
+                <AvatarImage src={profile.profileImageUrl ?? ''} alt="프로필 이미지" />
                 <AvatarFallback>{profile.name?.[0] ?? 'A'}</AvatarFallback>
               </Avatar>
             </Button>

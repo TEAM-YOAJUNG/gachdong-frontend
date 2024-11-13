@@ -456,12 +456,12 @@ export interface HasAuthorityByRecruitmentIdParams {
   recruitmentId: string;
 }
 
-export interface HasAuthorityParams {
-  clubId: string;
-}
-
 export interface IsValidRecruitmentParams {
   recruitmentId: string;
+}
+
+export interface HasAuthorityParams {
+  clubId: string;
 }
 
 export namespace Admin동아리Api {
@@ -556,28 +556,6 @@ export namespace Admin동아리Api {
   }
 
   /**
-   * @description 특정 동아리에 대한 권한이 있는지 확인합니다.
-   * @tags Admin 동아리 API
-   * @name HasAuthority
-   * @summary 특정 동아리에 대한 권한이 있는지 확인
-   * @request GET:/admin/api/v1/{clubId}/has-authority
-   * @secure
-   * @response `200` `boolean` OK
-   */
-  export namespace HasAuthority {
-    export type RequestParams = {
-      clubId: string;
-    };
-    export type RequestQuery = {
-      /** @format int64 */
-      clubId: number;
-    };
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = boolean;
-  }
-
-  /**
    * @description 유효한 동아리 모집 공고인지 확인합니다.
    * @tags Admin 동아리 API
    * @name IsValidRecruitment
@@ -593,6 +571,28 @@ export namespace Admin동아리Api {
     export type RequestQuery = {
       /** @format int64 */
       recruitmentId: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = boolean;
+  }
+
+  /**
+   * @description 특정 동아리에 대한 권한이 있는지 확인합니다.
+   * @tags Admin 동아리 API
+   * @name HasAuthority
+   * @summary 특정 동아리에 대한 권한이 있는지 확인
+   * @request GET:/admin/api/v1/has-authority/{clubId}
+   * @secure
+   * @response `200` `boolean` OK
+   */
+  export namespace HasAuthority {
+    export type RequestParams = {
+      clubId: string;
+    };
+    export type RequestQuery = {
+      /** @format int64 */
+      clubId: number;
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
@@ -1113,25 +1113,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 특정 동아리에 대한 권한이 있는지 확인합니다.
-     *
-     * @tags Admin 동아리 API
-     * @name HasAuthority
-     * @summary 특정 동아리에 대한 권한이 있는지 확인
-     * @request GET:/admin/api/v1/{clubId}/has-authority
-     * @secure
-     * @response `200` `boolean` OK
-     */
-    hasAuthority: ({ clubId, ...query }: HasAuthorityParams, params: RequestParams = {}) =>
-      this.request<boolean, any>({
-        path: `/admin/api/v1/${clubId}/has-authority`,
-        method: 'GET',
-        query: query,
-        secure: true,
-        ...params,
-      }),
-
-    /**
      * @description 유효한 동아리 모집 공고인지 확인합니다.
      *
      * @tags Admin 동아리 API
@@ -1144,6 +1125,25 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     isValidRecruitment: ({ recruitmentId, ...query }: IsValidRecruitmentParams, params: RequestParams = {}) =>
       this.request<boolean, any>({
         path: `/admin/api/v1/recruitment/${recruitmentId}/is-valid`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description 특정 동아리에 대한 권한이 있는지 확인합니다.
+     *
+     * @tags Admin 동아리 API
+     * @name HasAuthority
+     * @summary 특정 동아리에 대한 권한이 있는지 확인
+     * @request GET:/admin/api/v1/has-authority/{clubId}
+     * @secure
+     * @response `200` `boolean` OK
+     */
+    hasAuthority: ({ clubId, ...query }: HasAuthorityParams, params: RequestParams = {}) =>
+      this.request<boolean, any>({
+        path: `/admin/api/v1/has-authority/${clubId}`,
         method: 'GET',
         query: query,
         secure: true,

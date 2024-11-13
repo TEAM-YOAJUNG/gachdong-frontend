@@ -8,22 +8,21 @@ export function useQuestions() {
     setQuestions(prev => [
       ...prev,
       {
-        type: 'short',
-        title: '',
-        description: '',
+        type: 'shortText',
+        name: `question_${prev.length + 1}`,
+        label: '',
+        description: null,
         required: false,
-        maxLength: 100,
-        options: [],
-      },
+      } as Question,
     ]);
   };
 
-  const updateQuestion = (index: number, field: keyof Question, value: Question[keyof Question]) => {
+  const updateQuestion = (index: number, updates: Partial<Question>) => {
     setQuestions(prev => {
       const newQuestions = [...prev];
       newQuestions[index] = {
         ...newQuestions[index],
-        [field]: value,
+        ...updates,
       } as Question;
       return newQuestions;
     });
@@ -42,39 +41,8 @@ export function useQuestions() {
     });
   };
 
-  const addOption = (questionIndex: number) => {
-    setQuestions(prev => {
-      const newQuestions = [...prev];
-      newQuestions[questionIndex] = {
-        ...newQuestions[questionIndex],
-        options: [...(newQuestions[questionIndex]?.options || []), ''],
-      } as Question;
-      return newQuestions;
-    });
-  };
-
-  const updateOption = (questionIndex: number, optionIndex: number, value: string) => {
-    setQuestions(prev => {
-      const newQuestions = [...prev];
-      const newOptions = [...(newQuestions[questionIndex]?.options || [])];
-      newOptions[optionIndex] = value;
-      newQuestions[questionIndex] = {
-        ...newQuestions[questionIndex],
-        options: newOptions,
-      } as Question;
-      return newQuestions;
-    });
-  };
-
-  const removeOption = (questionIndex: number, optionIndex: number) => {
-    setQuestions(prev => {
-      const newQuestions = [...prev];
-      newQuestions[questionIndex] = {
-        ...newQuestions[questionIndex],
-        options: (newQuestions[questionIndex]?.options || []).filter((_, i) => i !== optionIndex),
-      } as Question;
-      return newQuestions;
-    });
+  const addTemplate = (templateQuestions: readonly Question[]) => {
+    setQuestions(prev => [...prev, ...structuredClone(templateQuestions)]);
   };
 
   return {
@@ -83,8 +51,6 @@ export function useQuestions() {
     updateQuestion,
     removeQuestion,
     handleQuestionReorder,
-    addOption,
-    updateOption,
-    removeOption,
+    addTemplate,
   };
 }
