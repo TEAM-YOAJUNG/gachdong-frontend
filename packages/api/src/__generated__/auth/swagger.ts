@@ -28,48 +28,21 @@ export interface RegistrationRequest {
   role: 'USER' | 'ADMIN';
 }
 
-/** 로그인 정보 */
-export interface LoginRequest {
+/** 사용자 및 관리자의 userReferenceId 목록 */
+export interface ProfilesRequest {
   /**
-   * 사용자 이메일
-   * @example "user@gachon.ac.kr"
+   * UUID 목록
+   * @example ["uuid1","uuid2","uuid3"]
    */
-  email: string;
-  /**
-   * 비밀번호
-   * @example "password123!"
-   */
-  password: string;
-}
-
-export interface AuthResponse {
-  /**
-   * JWT 토큰
-   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-   */
-  token?: string;
-  /**
-   * 응답 메시지
-   * @example "로그인 성공"
-   */
-  message?: string;
-}
-
-/** 비밀번호 변경 정보 */
-export interface ChangePasswordRequest {
-  /**
-   * 현재 비밀번호
-   * @example "currentpassword123"
-   */
-  currentPassword?: string;
-  /**
-   * 새 비밀번호
-   * @example "newpassword123!"
-   */
-  newPassword?: string;
+  userReferenceId: string[];
 }
 
 export interface UserProfileResponse {
+  /**
+   * 사용자 고유 식별자
+   * @example "uuid-1234-5678"
+   */
+  userReferenceId?: string;
   /**
    * 사용자 이메일
    * @example "user@gachon.ac.kr"
@@ -90,6 +63,65 @@ export interface UserProfileResponse {
    * @example "https://example.com/profile.png"
    */
   profileImageUrl?: string;
+}
+
+/** 로그인 정보 */
+export interface LoginRequest {
+  /**
+   * 사용자 이메일
+   * @example "user@gachon.ac.kr"
+   */
+  email: string;
+  /**
+   * 비밀번호
+   * @example "password123!"
+   */
+  password: string;
+}
+
+export interface AuthResponse {
+  /**
+   * JWT 토큰
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  accessToken?: string;
+  /**
+   * Refresh 토큰
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  refreshToken?: string;
+  /**
+   * 응답 메시지
+   * @example "로그인 성공"
+   */
+  message?: string;
+}
+
+export interface TokenResponse {
+  /**
+   * JWT Access Token
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  accessToken?: string;
+  /**
+   * 응답 메시지
+   * @example "Access Token 재발급 성공"
+   */
+  message?: string;
+}
+
+/** 비밀번호 변경 정보 */
+export interface ChangePasswordRequest {
+  /**
+   * 현재 비밀번호
+   * @example "currentpassword123"
+   */
+  currentPassword?: string;
+  /**
+   * 새 비밀번호
+   * @example "newpassword123!"
+   */
+  newPassword?: string;
 }
 
 export interface VerifyCodeParams {
@@ -226,6 +258,22 @@ export namespace Public사용자인증인가Api {
   }
 
   /**
+   * @description 주어진 userReferenceId 목록에 대한 사용자 및 관리자 프로필을 조회합니다.
+   * @tags Public 사용자 인증/인가 API
+   * @name GetProfiles
+   * @summary 사용자 및 관리자 프로필 조회
+   * @request POST:/public/api/v1/profiles
+   * @response `200` `(UserProfileResponse)[]` OK
+   */
+  export namespace GetProfiles {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = ProfilesRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserProfileResponse[];
+  }
+
+  /**
    * @description 사용자가 로그인합니다.
    * @tags Public 사용자 인증/인가 API
    * @name Login
@@ -337,6 +385,25 @@ export namespace 사용자인증인가Api {
   }
 
   /**
+   * @description 유효한 Refresh Token을 사용하여 새로운 Access Token을 발급받습니다.
+   * @tags 사용자 인증/인가 API
+   * @name RefreshToken
+   * @summary Refresh Token 재발급
+   * @request POST:/api/v1/refresh-token
+   * @response `200` `TokenResponse` OK
+   */
+  export namespace RefreshToken {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {
+      /** Refresh Token */
+      Authorization: string;
+    };
+    export type ResponseBody = TokenResponse;
+  }
+
+  /**
    * @description 사용자를 로그아웃합니다.
    * @tags 사용자 인증/인가 API
    * @name Logout
@@ -351,6 +418,8 @@ export namespace 사용자인증인가Api {
     export type RequestHeaders = {
       /** JWT 토큰 */
       Authorization: string;
+      /** Refresh Token */
+      'Refresh-Token': string;
     };
     export type ResponseBody = string;
   }
@@ -415,6 +484,25 @@ export namespace 관리자인증인가Api {
   }
 
   /**
+   * @description 유효한 Refresh Token을 사용하여 새로운 Access Token을 발급받습니다.
+   * @tags 관리자 인증/인가 API
+   * @name RefreshToken1
+   * @summary Refresh Token 재발급
+   * @request POST:/admin/api/v1/refresh-token
+   * @response `200` `TokenResponse` OK
+   */
+  export namespace RefreshToken1 {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {
+      /** Refresh Token */
+      Authorization: string;
+    };
+    export type ResponseBody = TokenResponse;
+  }
+
+  /**
    * @description 사용자를 로그아웃합니다.
    * @tags 관리자 인증/인가 API
    * @name Logout1
@@ -429,6 +517,8 @@ export namespace 관리자인증인가Api {
     export type RequestHeaders = {
       /** JWT 토큰 */
       Authorization: string;
+      /** Refresh Token */
+      'Refresh-Token': string;
     };
     export type ResponseBody = string;
   }
@@ -778,6 +868,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 주어진 userReferenceId 목록에 대한 사용자 및 관리자 프로필을 조회합니다.
+     *
+     * @tags Public 사용자 인증/인가 API
+     * @name GetProfiles
+     * @summary 사용자 및 관리자 프로필 조회
+     * @request POST:/public/api/v1/profiles
+     * @response `200` `(UserProfileResponse)[]` OK
+     */
+    getProfiles: (data: ProfilesRequest, params: RequestParams = {}) =>
+      this.request<UserProfileResponse[], any>({
+        path: `/public/api/v1/profiles`,
+        method: 'POST',
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description 사용자가 로그인합니다.
      *
      * @tags Public 사용자 인증/인가 API
@@ -884,6 +992,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 유효한 Refresh Token을 사용하여 새로운 Access Token을 발급받습니다.
+     *
+     * @tags 사용자 인증/인가 API
+     * @name RefreshToken
+     * @summary Refresh Token 재발급
+     * @request POST:/api/v1/refresh-token
+     * @response `200` `TokenResponse` OK
+     */
+    refreshToken: (params: RequestParams = {}) =>
+      this.request<TokenResponse, any>({
+        path: `/api/v1/refresh-token`,
+        method: 'POST',
+        ...params,
+      }),
+
+    /**
      * @description 사용자를 로그아웃합니다.
      *
      * @tags 사용자 인증/인가 API
@@ -946,6 +1070,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     deleteAccount1: (params: RequestParams = {}) =>
       this.request<string, any>({
         path: `/admin/api/v1/unregister`,
+        method: 'POST',
+        ...params,
+      }),
+
+    /**
+     * @description 유효한 Refresh Token을 사용하여 새로운 Access Token을 발급받습니다.
+     *
+     * @tags 관리자 인증/인가 API
+     * @name RefreshToken1
+     * @summary Refresh Token 재발급
+     * @request POST:/admin/api/v1/refresh-token
+     * @response `200` `TokenResponse` OK
+     */
+    refreshToken1: (params: RequestParams = {}) =>
+      this.request<TokenResponse, any>({
+        path: `/admin/api/v1/refresh-token`,
         method: 'POST',
         ...params,
       }),

@@ -28,7 +28,7 @@ export const useLogin = () => {
         title: '로그인에 성공하였습니다.',
       });
 
-      CookieManager.setToken({ accessToken: response.token ?? '' });
+      CookieManager.setToken({ accessToken: response.accessToken ?? '' });
       queryClient.invalidateQueries({ queryKey: keys.all });
       router.replace('/');
     },
