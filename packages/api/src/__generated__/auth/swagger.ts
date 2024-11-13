@@ -85,6 +85,11 @@ export interface UserProfileResponse {
    * @example "USER, ADMIN"
    */
   role?: string;
+  /**
+   * 프로필 이미지 URL
+   * @example "https://example.com/profile.png"
+   */
+  profileImageUrl?: string;
 }
 
 export interface VerifyCodeParams {
