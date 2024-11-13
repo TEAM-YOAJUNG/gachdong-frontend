@@ -1,9 +1,9 @@
 import { Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { PostInfo } from '../../types';
+import { Editor } from '@/components/editor';
 
 interface PostInfoSectionProps {
   postInfo: PostInfo;
@@ -36,12 +36,11 @@ export function PostInfoSection({ postInfo, onChange }: PostInfoSectionProps) {
           <Label htmlFor="content" className="text-gray-200">
             공고 내용
           </Label>
-          <Textarea
-            id="content"
-            name="content"
+          <Editor
             value={postInfo.content}
-            onChange={onChange}
-            className="min-h-[200px] border-gray-600 bg-gray-700 text-gray-100"
+            onChange={markdown =>
+              onChange({ target: { name: 'content', value: markdown } } as React.ChangeEvent<HTMLInputElement>)
+            }
           />
         </div>
 

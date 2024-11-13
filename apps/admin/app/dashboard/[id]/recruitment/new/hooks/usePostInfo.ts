@@ -7,7 +7,7 @@ export function usePostInfo() {
     content: '',
     startDate: '',
     endDate: '',
-    processes: ['서류 심사'],
+    processes: ['서류 심사', '면접', '최종 합격'],
   });
 
   const handlePostInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

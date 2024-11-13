@@ -54,7 +54,20 @@ export interface CreateClubRecruitmentRequest {
   processData: Record<string, object>;
 }
 
-export type CreateClubRecruitmentResponse = object;
+export interface CreateClubRecruitmentResponse {
+  /**
+   * 동아리 ID
+   * @format int64
+   * @example 1
+   */
+  clubId: number;
+  /**
+   * 동아리 모집 ID
+   * @format int64
+   * @example 1
+   */
+  clubRecruitmentId: number;
+}
 
 export interface CreateClubRequest {
   /**
@@ -439,6 +452,10 @@ export interface ArrayResponseAdminAuthorizedClubResponse {
   results?: AdminAuthorizedClubResponse[];
 }
 
+export interface HasAuthorityByRecruitmentIdParams {
+  recruitmentId: string;
+}
+
 export interface HasAuthorityParams {
   clubId: string;
 }
@@ -514,6 +531,28 @@ export namespace Admin동아리Api {
     export type RequestBody = CreateClubActivityRequest;
     export type RequestHeaders = {};
     export type ResponseBody = CreateClubActivityResponse;
+  }
+
+  /**
+   * @description 모집 공고 ID를 통해 특정 동아리에 대한 권한이 있는지 확인합니다.
+   * @tags Admin 동아리 API
+   * @name HasAuthorityByRecruitmentId
+   * @summary 모집 공고 ID를 가지고 특정 동아리에 대한 권한이 있는지 확인
+   * @request GET:/admin/api/v1/{recruitmentId}/has-authority
+   * @secure
+   * @response `200` `boolean` OK
+   */
+  export namespace HasAuthorityByRecruitmentId {
+    export type RequestParams = {
+      recruitmentId: string;
+    };
+    export type RequestQuery = {
+      /** @format int64 */
+      recruitmentId: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = boolean;
   }
 
   /**
@@ -1048,6 +1087,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 모집 공고 ID를 통해 특정 동아리에 대한 권한이 있는지 확인합니다.
+     *
+     * @tags Admin 동아리 API
+     * @name HasAuthorityByRecruitmentId
+     * @summary 모집 공고 ID를 가지고 특정 동아리에 대한 권한이 있는지 확인
+     * @request GET:/admin/api/v1/{recruitmentId}/has-authority
+     * @secure
+     * @response `200` `boolean` OK
+     */
+    hasAuthorityByRecruitmentId: (
+      { recruitmentId, ...query }: HasAuthorityByRecruitmentIdParams,
+      params: RequestParams = {}
+    ) =>
+      this.request<boolean, any>({
+        path: `/admin/api/v1/${recruitmentId}/has-authority`,
+        method: 'GET',
+        query: query,
+        secure: true,
         ...params,
       }),
 
