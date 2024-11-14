@@ -13,13 +13,13 @@ import { Camera, Eye, EyeOff } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { authQueries } from '@/apis/auth';
 import { useChangePassword, useDeleteAccount } from '@/apis/auth';
-import { useUpdateProfileImage } from '@/apis/user';
+import { useUpdateProfileImage, useUploadProfileImage } from '@/apis/user';
 import { toast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 // 프로필 수정 스키마
 const profileFormSchema = z.object({
-  profileImage: z.instanceof(File).optional(),
+  profileImage: z.instanceof(File).nullable(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -45,7 +45,7 @@ export default function SettingsContainer() {
   const { data: user } = useQuery(authQueries.profile());
   const { mutateAsync: changePassword } = useChangePassword();
   const { mutateAsync: deleteAccount } = useDeleteAccount();
-  const { mutateAsync: updateProfileImage } = useUpdateProfileImage();
+  const { mutate: uploadProfileImage } = useUploadProfileImage();
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -64,10 +64,12 @@ export default function SettingsContainer() {
   });
 
   const handleProfileSubmit = async (data: ProfileFormValues) => {
+    if (data.profileImage == null) {
+      return;
+    }
+
     try {
-      await updateProfileImage({
-        image: data.profileImage,
-      });
+      uploadProfileImage({ image: data.profileImage });
 
       setPreviewImage(null);
       profileForm.reset();
@@ -173,7 +175,7 @@ export default function SettingsContainer() {
                     variant="outline"
                     onClick={() => {
                       setPreviewImage(null);
-                      profileForm.setValue('profileImage', undefined);
+                      profileForm.setValue('profileImage', null);
                     }}
                   >
                     취소
