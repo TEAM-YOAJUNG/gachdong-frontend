@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Calendar, Plus, Search, Users } from 'lucide-react';
+import { Bell, Calendar, Plus, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useSuspenseQuery } from '@tanstack/react-query';
