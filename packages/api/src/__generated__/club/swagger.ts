@@ -9,6 +9,200 @@
  * ---------------------------------------------------------------
  */
 
+export interface UpdateClubRequest {
+  /**
+   * 동아리 ID
+   * @format int64
+   * @example 1
+   */
+  clubId: number;
+  /**
+   * 동아리 이름
+   * @example "가츠동"
+   */
+  name: string;
+  /**
+   * 동아리 카테고리
+   * @example "SPORTS"
+   */
+  category: 'ACADEMIC' | 'EXHIBITION' | 'SPORTS' | 'PERFORMANCE' | 'MUSIC' | 'RELIGION' | 'OTHER';
+  /**
+   * 동아리 한줄 설명
+   * @example "가츠동은 최고의 동아리입니다."
+   */
+  shortDescription: string;
+  /**
+   * 동아리 소개
+   * @example "<h1>가츠동</h1> <p>최고의 동아리입니다</p>"
+   */
+  introduction?: string;
+  /**
+   * 동아리 이미지 URL
+   * @example "http://example.com/image.png"
+   */
+  clubImageUrl?: string;
+  /**
+   * 동아리 설립일
+   * @format date-time
+   */
+  establishedAt?: string;
+}
+
+export interface ClubResponse {
+  /**
+   * 동아리 ID
+   * @format int64
+   * @example 1
+   */
+  clubId: number;
+  /**
+   * 동아리 이름
+   * @example "가츠동"
+   */
+  clubName: string;
+  /**
+   * 동아리 카테고리
+   * @example "SPORTS"
+   */
+  category: 'ACADEMIC' | 'EXHIBITION' | 'SPORTS' | 'PERFORMANCE' | 'MUSIC' | 'RELIGION' | 'OTHER';
+  /**
+   * 한줄 소개
+   * @example "가츠동은 최고의 동아리입니다."
+   */
+  shortDescription: string;
+  /**
+   * 이미지 URL
+   * @example "http://example.com/image.jpg"
+   */
+  clubImageUrl: string;
+  /**
+   * 모집 여부
+   * @example true
+   */
+  recruitingStatus: boolean;
+  /**
+   * 동아리 설명
+   * @example "가츠동은 다양한 활동을 하는 동아리입니다."
+   */
+  introduction: string;
+  /**
+   * 설립일
+   * @format date-time
+   */
+  establishedAt: string;
+  /**
+   * 업데이트일
+   * @format date-time
+   */
+  updatedAt: string;
+}
+
+export interface UpdateContactInfoRequest {
+  /**
+   * 동아리 ID
+   * @format int64
+   * @example 1
+   */
+  clubId: number;
+  /**
+   * 연락처 ID
+   * @format int64
+   * @example 1
+   */
+  contactInfoId: number;
+  /**
+   * 연락처 유형
+   * @example "전화번호"
+   */
+  type: string;
+  /**
+   * 연락처
+   * @example "010-1234-5678"
+   */
+  contact: string;
+}
+
+export interface ContactInfoResponse {
+  /**
+   * 연락처 ID
+   * @format int64
+   * @example 1
+   */
+  id: number;
+  /**
+   * 연락 수단 (예: gmail, phone)
+   * @example "gmail"
+   */
+  contactMethod: string;
+  /**
+   * 연락처 정보
+   * @example "gachdong@gmail.com"
+   */
+  contactValue: string;
+}
+
+export interface UpdateClubActivityRequest {
+  /**
+   * 동아리 ID
+   * @format int64
+   * @example 1
+   */
+  clubId: number;
+  /**
+   * 활동 ID
+   * @format int64
+   * @example 1
+   */
+  activityId: number;
+  /**
+   * 활동 제목
+   * @example "가츠동 축구 동아리 첫 모임"
+   */
+  title: string;
+  /**
+   * 활동 설명
+   * @example "가츠동 축구 동아리 첫 모임입니다."
+   */
+  description: string;
+  /**
+   * 활동 날짜
+   * @format date
+   * @example "2023-08-31"
+   */
+  date: string;
+}
+
+export interface UpdateClubActivityResponse {
+  /**
+   * 동아리 ID
+   * @format int64
+   * @example 1
+   */
+  clubId: number;
+  /**
+   * 활동 ID
+   * @format int64
+   * @example 1
+   */
+  activityId: number;
+  /**
+   * 활동 제목
+   * @example "가츠동 축구 동아리 첫 모임"
+   */
+  title: string;
+  /**
+   * 활동 설명
+   * @example "가츠동 축구 동아리 첫 모임입니다."
+   */
+  description: string;
+  /**
+   * 활동 날짜
+   * @format date
+   * @example "2023-08-31"
+   */
+  date: string;
+}
+
 export interface CreateClubRecruitmentRequest {
   /**
    * 동아리 ID
@@ -112,55 +306,6 @@ export interface CreateClubRequest {
    * @format date-time
    */
   establishedAt?: string;
-}
-
-export interface ClubResponse {
-  /**
-   * 동아리 ID
-   * @format int64
-   * @example 1
-   */
-  clubId: number;
-  /**
-   * 동아리 이름
-   * @example "가츠동"
-   */
-  clubName: string;
-  /**
-   * 동아리 카테고리
-   * @example "SPORTS"
-   */
-  category: 'ACADEMIC' | 'EXHIBITION' | 'SPORTS' | 'PERFORMANCE' | 'MUSIC' | 'RELIGION' | 'OTHER';
-  /**
-   * 한줄 소개
-   * @example "가츠동은 최고의 동아리입니다."
-   */
-  shortDescription: string;
-  /**
-   * 이미지 URL
-   * @example "http://example.com/image.jpg"
-   */
-  clubImageUrl: string;
-  /**
-   * 모집 여부
-   * @example true
-   */
-  recruitingStatus: boolean;
-  /**
-   * 동아리 설명
-   * @example "가츠동은 다양한 활동을 하는 동아리입니다."
-   */
-  introduction: string;
-  /**
-   * 설립일
-   * @format date-time
-   */
-  establishedAt: string;
-  /**
-   * 업데이트일
-   * @format date-time
-   */
-  updatedAt: string;
 }
 
 export interface CreateClubContactInfoRequest {
@@ -477,6 +622,57 @@ export interface ArrayResponseAdminAuthorizedClubResponse {
 }
 
 export namespace Admin동아리Api {
+  /**
+   * @description 동아리 정보를 입력받아 동아리를 수정합니다.
+   * @tags Admin 동아리 API
+   * @name UpdateClubInfo
+   * @summary 동아리 정보 수정
+   * @request PUT:/admin/api/v1/update
+   * @secure
+   * @response `200` `ClubResponse` OK
+   */
+  export namespace UpdateClubInfo {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = UpdateClubRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = ClubResponse;
+  }
+
+  /**
+   * @description 동아리 연락처 정보를 입력받아 연락처 정보를 수정합니다.
+   * @tags Admin 동아리 API
+   * @name UpdateContactInfo
+   * @summary 동아리 연락처 정보 수정
+   * @request PUT:/admin/api/v1/contact-info/update
+   * @secure
+   * @response `200` `ContactInfoResponse` OK
+   */
+  export namespace UpdateContactInfo {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = UpdateContactInfoRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = ContactInfoResponse;
+  }
+
+  /**
+   * @description 동아리 활동 내역을 입력받아 활동 내역을 수정합니다.
+   * @tags Admin 동아리 API
+   * @name UpdateClubActivity
+   * @summary 동아리 활동 내역 수정
+   * @request PUT:/admin/api/v1/activities/update
+   * @secure
+   * @response `200` `UpdateClubActivityResponse` OK
+   */
+  export namespace UpdateClubActivity {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = UpdateClubActivityRequest;
+    export type RequestHeaders = {};
+    export type ResponseBody = UpdateClubActivityResponse;
+  }
+
   /**
    * @description 동아리 모집 공고를 입력받아 동아리에 추가합니다.
    * @tags Admin 동아리 API
@@ -1016,6 +1212,66 @@ export class HttpClient<SecurityDataType = unknown> {
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   admin동아리Api = {
+    /**
+     * @description 동아리 정보를 입력받아 동아리를 수정합니다.
+     *
+     * @tags Admin 동아리 API
+     * @name UpdateClubInfo
+     * @summary 동아리 정보 수정
+     * @request PUT:/admin/api/v1/update
+     * @secure
+     * @response `200` `ClubResponse` OK
+     */
+    updateClubInfo: (data: UpdateClubRequest, params: RequestParams = {}) =>
+      this.request<ClubResponse, any>({
+        path: `/admin/api/v1/update`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 동아리 연락처 정보를 입력받아 연락처 정보를 수정합니다.
+     *
+     * @tags Admin 동아리 API
+     * @name UpdateContactInfo
+     * @summary 동아리 연락처 정보 수정
+     * @request PUT:/admin/api/v1/contact-info/update
+     * @secure
+     * @response `200` `ContactInfoResponse` OK
+     */
+    updateContactInfo: (data: UpdateContactInfoRequest, params: RequestParams = {}) =>
+      this.request<ContactInfoResponse, any>({
+        path: `/admin/api/v1/contact-info/update`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 동아리 활동 내역을 입력받아 활동 내역을 수정합니다.
+     *
+     * @tags Admin 동아리 API
+     * @name UpdateClubActivity
+     * @summary 동아리 활동 내역 수정
+     * @request PUT:/admin/api/v1/activities/update
+     * @secure
+     * @response `200` `UpdateClubActivityResponse` OK
+     */
+    updateClubActivity: (data: UpdateClubActivityRequest, params: RequestParams = {}) =>
+      this.request<UpdateClubActivityResponse, any>({
+        path: `/admin/api/v1/activities/update`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
     /**
      * @description 동아리 모집 공고를 입력받아 동아리에 추가합니다.
      *
