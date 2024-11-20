@@ -44,6 +44,9 @@ const ProcessColumn = ({ id, title, children }: { id: string; title: string; chi
 
 // 드래그 가능한 지원자 카드 컴포넌트
 const ApplicantCard = ({ id, index, name, email }: { id: number; index: number; name: string; email: string }) => {
+  const router = useRouter();
+  const params = useParams();
+
   return (
     <Draggable draggableId={id.toString()} index={index}>
       {(provided, snapshot) => (
@@ -58,7 +61,12 @@ const ApplicantCard = ({ id, index, name, email }: { id: number; index: number; 
               <p className="font-medium">{name}</p>
               <p className="text-sm text-gray-400">{email}</p>
             </div>
-            <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-blue-400 hover:text-blue-300"
+              onClick={() => router.push(`/dashboard/${params.id}/recruitment/${params.recruitmentId}/applicant/${id}`)}
+            >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -75,16 +83,14 @@ interface StatusUpdate {
 
 export default function RecruitmentPostDetail() {
   const params = useParams();
-  const router = useRouter();
 
   // 모집 공고 & 지원자 데이터 조회
   const { data: clubRecruitment } = useSuspenseQuery(
     clubQueries.recruitmentsDetail(Number(params.id), Number(params.recruitmentId))
   );
 
-  const { data: { result: { toGetApplicationDTO: applicants = [] } = {} } = {} } = useSuspenseQuery(
-    applicationQueries.clubApplicationList(Number(params.recruitmentId))
-  );
+  // FIXME: Hydration 문제 해결 필요 (Server, Client의 status 값 불일치)
+  const { data: applicants } = useSuspenseQuery(applicationQueries.clubApplicationList(Number(params.recruitmentId)));
   const { mutateAsync: changeStatusMutateAsync, isPending: isChangeStatusPending } = useChangeApplicationStatus();
 
   // 상태 업데이트를 위한 변경사항 추적
@@ -155,7 +161,6 @@ export default function RecruitmentPostDetail() {
       }
 
       setModifiedStatuses([]);
-      setDraggedApplicants(applicants);
     }
   };
 

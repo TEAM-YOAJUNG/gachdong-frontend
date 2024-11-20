@@ -402,6 +402,12 @@ export interface ClubRecruitmentDetailResponse {
    */
   recruitmentId: number;
   /**
+   * 모집공고 조회수
+   * @format int32
+   * @example 1
+   */
+  viewCount: number;
+  /**
    * 모집공고 이름
    * @example "GDSC Gachon 24-25 Member 모집"
    */
@@ -425,9 +431,9 @@ export interface ClubRecruitmentDetailResponse {
   applicationFormId: number;
   /**
    * 모집 상태
-   * @example true
+   * @example "true"
    */
-  recruitmentStatus: boolean;
+  recruitmentStatus: 'RECRUITING' | 'RECRUITMENT_END';
   /**
    * 모집 시작일
    * @format date-time
@@ -514,6 +520,12 @@ export interface ClubRecruitmentResponse {
    */
   recruitmentId: number;
   /**
+   * 조회수
+   * @format int32
+   * @example 1
+   */
+  viewCount: number;
+  /**
    * 모집공고 이름
    * @example "GDSC Gachon 24-25 Member 모집"
    */
@@ -523,6 +535,11 @@ export interface ClubRecruitmentResponse {
    * @example "가츠동"
    */
   clubName: string;
+  /**
+   * 모집 상태
+   * @example "RECRUITING"
+   */
+  recruitmentStatus: 'RECRUITING' | 'RECRUITMENT_END';
   /**
    * 동아리 이미지 URL
    * @example "https://gach-dong.club"
@@ -955,6 +972,35 @@ export namespace Public동아리Api {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = ArrayResponseClubRecruitmentResponse;
+  }
+
+  /**
+   * @description 특정 동아리의 모집 공고를 조회합니다.
+   * @tags Public 동아리 API
+   * @name GetClubRecruitmentsInService
+   * @summary 동아리 별 모집 공고 조회 (내부 서비스 용)
+   * @request GET:/public/api/v1/inner-service/{clubId}/recruitments/{recruitmentId}
+   * @response `200` `ClubRecruitmentDetailResponse` OK
+   */
+  export namespace GetClubRecruitmentsInService {
+    export type RequestParams = {
+      /**
+       * 동아리 ID
+       * @format int64
+       * @example 1
+       */
+      clubId: number;
+      /**
+       * 모집 공고 ID
+       * @format int64
+       * @example 1
+       */
+      recruitmentId: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = ClubRecruitmentDetailResponse;
   }
 
   /**
@@ -1517,6 +1563,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getClubsRecruitments: (params: RequestParams = {}) =>
       this.request<ArrayResponseClubRecruitmentResponse, any>({
         path: `/public/api/v1/recruitments`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * @description 특정 동아리의 모집 공고를 조회합니다.
+     *
+     * @tags Public 동아리 API
+     * @name GetClubRecruitmentsInService
+     * @summary 동아리 별 모집 공고 조회 (내부 서비스 용)
+     * @request GET:/public/api/v1/inner-service/{clubId}/recruitments/{recruitmentId}
+     * @response `200` `ClubRecruitmentDetailResponse` OK
+     */
+    getClubRecruitmentsInService: (clubId: number, recruitmentId: number, params: RequestParams = {}) =>
+      this.request<ClubRecruitmentDetailResponse, any>({
+        path: `/public/api/v1/inner-service/${clubId}/recruitments/${recruitmentId}`,
         method: 'GET',
         ...params,
       }),
